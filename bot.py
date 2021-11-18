@@ -155,7 +155,7 @@ def get_stud_appraisals(message):
         return
     global id, stud
     try:
-        subject_id_query = "SELECT `id`, `subject_name` FROM `subject` WHERE student_id=%s"
+        subject_id_query = "SELECT student_subject.student_id, subject.subject_name, student_subject.subject_id FROM student_subject, subject WHERE student_subject.student_id=%s AND subject.id = student_subject.subject_id"
         appraisals_query = "SELECT * FROM `appraisals` WHERE subject_id IN (SELECT `id` FROM `subject` WHERE student_id=%s)"
         subjects = queryToDB(subject_id_query % stud[0][0])
         appraisals = queryToDB(appraisals_query % stud[0][0])
@@ -163,7 +163,7 @@ def get_stud_appraisals(message):
         for i in range(len(subjects)):
             _message += "Предмет - " + subjects[i][1] + '\n'
             for y in range(len(appraisals)):
-                if appraisals[y][4] != subjects[i][0]: continue
+                if appraisals[y][4] != subjects[i][2]: continue
                 _message += "За - " + str(appraisals[y][1]) + '\n' + "Оцінка - " + str(appraisals[y][2]) + '\n' + "Дата - " + str(appraisals[y][3].strftime('%Y-%m-%d') + '\n')
         bot.send_message(chat_id=message.chat.id, text=_message)
     except Error as e:
